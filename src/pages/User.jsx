@@ -21,6 +21,7 @@ export default function User() {
       .catch((err) => {
         navigate('/signin');
       });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function signOut() {
