@@ -1,8 +1,6 @@
 import { useState } from "react"
 import Rate from "./cmc-table/Rate"
 import fire from "../assets/fire.png"
-import btc from "../assets/btc.png"
-import usdt from "../assets/usdt.png"
 import gainers from "../assets/gainers.png"
 import recent from "../assets/recent.png"
 import monaLisa from "../assets/mona-lisa.png"
@@ -18,7 +16,7 @@ const styles = {
 }
 
 const Trending = () => {
-    const [checked, setChecked] = useState(false)
+    // const [checked, setChecked] = useState(false)
 
     const trendingData = [
         {
