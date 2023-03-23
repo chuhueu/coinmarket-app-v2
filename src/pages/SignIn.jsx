@@ -22,7 +22,16 @@ export default function SignIn() {
       connector: new InjectedConnector(),
     });
 
-    const userData = { address: account, chain: chain.id, network: 'evm' };
+    const userData = {
+      address: account,
+      chain: chain.id,
+      network: 'evm',
+      // domain: 'hieucv-nft-v2.netlify.app',
+      // statement: 'Please sign this message to confirm your identity.',
+      // uri: 'http://localhost:3000',
+      // timeout: 15
+    };
+    console.log(userData)
     // making a post request to our 'request-message' endpoint
     const { data } = await axios.post(
       `${process.env.REACT_APP_SERVER_URL}/request-message`,
