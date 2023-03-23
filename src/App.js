@@ -1,24 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createClient, configureChains, mainnet, WagmiConfig } from 'wagmi';
+import { publicProvider } from 'wagmi/providers/public';
+import { polygonMumbai } from '@wagmi/chains';
+
+import Balances from "./pages/Balances";
+import Home from "./pages/Home";
+import SignIn from './pages/SignIn';
+import User from './pages/User';
+
+const { provider, webSocketProvider } = configureChains(
+  [mainnet, polygonMumbai],
+  [publicProvider()],
+)
+
+const client = createClient({
+  autoConnect: true,
+  provider,
+  webSocketProvider,
+});
+
+const router = createBrowserRouter([
+  {
+    path: "/balances",
+    element: <Balances />,
+  },
+  {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: '/signin',
+    element: <SignIn />,
+  },
+  {
+    path: '/user',
+    element: <User />,
+  },
+]);
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <WagmiConfig client={client}>
+      <RouterProvider router={router} />
+    </WagmiConfig>
   );
 }
 
