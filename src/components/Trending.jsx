@@ -1,4 +1,4 @@
-import { useState } from "react"
+// import { useState } from "react"
 import Rate from "./cmc-table/Rate"
 import fire from "../assets/fire.png"
 import gainers from "../assets/gainers.png"
