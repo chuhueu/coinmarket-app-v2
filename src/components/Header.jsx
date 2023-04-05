@@ -12,8 +12,8 @@ const Header = () => {
   const tabs = [
     {
       id: 1,    
-      text: 'Cryptpcurrencies',
-      isBadge: true,
+      text: 'Home',
+      isBadge: false,
     },
     {
       id: 2,
@@ -51,6 +51,26 @@ const Header = () => {
   // TODO: remove later
   const handleAuthFake = () => {
     setIsLogin(!isLogin)
+  }
+
+  const onChangeTab = (tab) => {
+    console.log(tab)
+    // eslint-disable-next-line default-case
+    switch(tab.id) {
+      case 1: {
+        navigate('/')
+        break;
+      }
+      case 2: {
+        navigate('/exchanges')
+        break;
+      }
+      case 3: {
+        navigate('/nft')
+        break;
+      }
+      default: navigate('/')
+    }
   }
 
   const handleAuth = async () => {
@@ -101,7 +121,7 @@ const Header = () => {
         <div className="flex justify-center items-center gap-[20px]">
             { tabs.map((tab, index) => {
                 return (
-                    <div key={index} className="relative mr-1 cursor-pointer hover:opacity-60">
+                    <div onClick={() => onChangeTab(tab)} key={index} className="relative mr-1 cursor-pointer hover:opacity-60">
                         <div className="text-white flex mx-[10px]">{tab.text}</div>
                         {tab.isBadge && <div className="rounded-full bg-blue-600 h-1 w-1 absolute bottom-5 right-0 top-1 ring-4"/>}
                     </div>

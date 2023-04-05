@@ -20,7 +20,6 @@ export const CoinMarketProvider = ({children}) => {
                 },
             )
             const data = await res.json()
-            console.log(data)
             return data.data
         } catch (e) {
             console.log(e.message)

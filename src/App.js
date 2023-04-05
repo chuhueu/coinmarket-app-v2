@@ -7,8 +7,10 @@ import Balances from "./pages/Balances";
 import Home from "./pages/Home";
 import SignIn from './pages/SignIn';
 import User from './pages/User';
+import Info from './pages/currencies/Info';
 
 import { CoinMarketProvider } from "./context/context";
+import { GunProvider } from './context/gunContext'
 
 const { provider, webSocketProvider } = configureChains(
   [mainnet, polygonMumbai],
@@ -38,14 +40,20 @@ const router = createBrowserRouter([
     path: '/user',
     element: <User />,
   },
+  {
+    path: '/currencies/info',
+    element: <Info />,
+  },
 ]);
 
 function App() {
   return (
     <WagmiConfig client={client}>
-      <CoinMarketProvider>
-        <RouterProvider router={router} />
-      </CoinMarketProvider>
+      <GunProvider>
+        <CoinMarketProvider>
+          <RouterProvider router={router} />
+        </CoinMarketProvider>
+      </GunProvider>
     </WagmiConfig>
   );
 }
