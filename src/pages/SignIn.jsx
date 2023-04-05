@@ -25,11 +25,7 @@ export default function SignIn() {
     const userData = {
       address: account,
       chain: chain.id,
-      network: 'evm',
-      // domain: 'hieucv-nft-v2.netlify.app',
-      // statement: 'Please sign this message to confirm your identity.',
-      // uri: 'http://localhost:3000',
-      // timeout: 15
+      network: 'evm'
     };
     console.log(userData)
     // making a post request to our 'request-message' endpoint

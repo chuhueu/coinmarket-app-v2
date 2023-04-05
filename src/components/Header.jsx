@@ -1,4 +1,4 @@
-import React from 'react'
+import {React, useState} from 'react'
 import Search from '../assets/svg/search'
 import { useNavigate } from 'react-router-dom';
 
@@ -7,40 +7,38 @@ import { InjectedConnector } from 'wagmi/connectors/injected';
 import axios from 'axios';
 
 
-const Header = () => {    
-//   const [tabs, setTabs] = useState([]);
+const Header = () => {
+  const [isLogin, setIsLogin] = useState(false);
   const tabs = [
     {
-        text: 'Cryptpcurrencies',
-        isBadge: true,
+      id: 1,    
+      text: 'Cryptpcurrencies',
+      isBadge: true,
     },
     {
-        text: 'Exchanges',
-        isBadge: false,
+      id: 2,
+      text: 'Exchanges',
+      isBadge: false,
     },
     {
-        text: 'NFT',
-        isBadge: true,
+      id: 3,
+      text: 'NFT',
+      isBadge: true,
     },
     {
-        text: 'Cryptown',
-        isBadge: true,
+      id: 4,
+      text: 'Watch list',
+      isBadge: false,
     },
     {
-        text: 'Portfolio',
-        isBadge: false,
+      id: 5,
+      text: 'Products',
+      isBadge: true,
     },
     {
-        text: 'Watch list',
-        isBadge: false,
-    },
-    {
-        text: 'Products',
-        isBadge: true,
-    },
-    {
-        text: 'Learn',
-        isBadge: false,
+      id: 6,
+      text: 'Learn',
+      isBadge: false,
     },
   ]
   const navigate = useNavigate();
@@ -49,6 +47,11 @@ const Header = () => {
   const { disconnectAsync } = useDisconnect();
   const { isConnected } = useAccount();
   const { signMessageAsync } = useSignMessage();
+
+  // TODO: remove later
+  const handleAuthFake = () => {
+    setIsLogin(!isLogin)
+  }
 
   const handleAuth = async () => {
     //disconnects the web3 provider if it's already active
@@ -63,11 +66,7 @@ const Header = () => {
     const userData = {
       address: account,
       chain: chain.id,
-      network: 'evm',
-      // domain: 'hieucv-nft-v2.netlify.app',
-      // statement: 'Please sign this message to confirm your identity.',
-      // uri: 'http://localhost:3000',
-      // timeout: 15
+      network: 'evm'
     };
     console.log(userData)
     // making a post request to our 'request-message' endpoint
@@ -97,7 +96,7 @@ const Header = () => {
     navigate('/user');
   };
   return (
-    <div className="text-white flex mx-[10px]">
+    <div className="text-white flex bg-[#17171A] text-white h-20 gap-[100px] w-full p-[30px]">
       <div className="flex justify-center h-full max-w-screen-xl mx-auto px-4">
         <div className="flex justify-center items-center gap-[20px]">
             { tabs.map((tab, index) => {
@@ -117,10 +116,17 @@ const Header = () => {
             </div>
             <button
                 className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
-                onClick={() => handleAuth()}
+                onClick={() => handleAuthFake()}
             >
                 login
             </button>
+            {/* Change later */}
+            {
+              isLogin &&
+                <div className="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                  <svg className="absolute w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path></svg>
+                </div>
+            }
         </div>
       </div>
     </div>
