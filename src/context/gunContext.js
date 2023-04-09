@@ -1,7 +1,7 @@
 import { createContext, useReducer } from 'react'
 import Gun from 'gun'
 
-const gun = Gun(['https://discord-gun-node.herokuapp.com/gun'])
+// const gun = Gun(['https://discord-gun-node.herokuapp.com/gun'])
 
 export const GunContext = createContext()
 
@@ -22,27 +22,27 @@ export const GunProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
 
   const getMessages = _name => {
-    const messagesRef = gun.get(_name)
+    // const messagesRef = gun.get(_name)
 
-    messagesRef.map().once(message => {
-      dispatch({
-        type: 'add',
-        data: {
-          sender: message.sender,
-          content: message.content,
-          avatar: message.avatar,
-          createdAt: message.createdAt,
-          messageId: message.messageId,
-          isBullish: message.isBullish,
-        },
-      })
-    })
+    // messagesRef.map().once(message => {
+    //   dispatch({
+    //     type: 'add',
+    //     data: {
+    //       sender: message.sender,
+    //       content: message.content,
+    //       avatar: message.avatar,
+    //       createdAt: message.createdAt,
+    //       messageId: message.messageId,
+    //       isBullish: message.isBullish,
+    //     },
+    //   })
+    // })
   }
 
   return (
     <GunContext.Provider
       value={{
-        gun,
+        // gun,
         getMessages,
         state,
       }}
