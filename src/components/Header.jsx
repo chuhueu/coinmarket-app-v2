@@ -1,13 +1,26 @@
-import {React, useState} from 'react'
+import {React, useEffect, useState} from 'react'
 import Search from '../assets/svg/search'
 import { useNavigate } from 'react-router-dom';
-
+import Avatar from '@mui/material/Avatar';
 import { useAccount, useConnect, useSignMessage, useDisconnect } from 'wagmi';
 import { InjectedConnector } from 'wagmi/connectors/injected';
 import axios from 'axios';
-
+import logoFake from '../assets/logo/logo-fake.jpg';
+import IconButton from '@mui/material/IconButton';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Divider from '@mui/material/Divider';
+import Settings from '@mui/icons-material/Settings';
+import Logout from '@mui/icons-material/Logout';
 
 const Header = () => {
+  const userLocalStorage =
+    localStorage.getItem('user-signature') ??
+    localStorage.getItem('user-address') ??
+    localStorage.getItem('user-profileId') ??
+    ''
+  const [accessAuth, setAccessAuth] = useState(userLocalStorage);
   const [isLogin, setIsLogin] = useState(false);
   const tabs = [
     {
@@ -41,6 +54,18 @@ const Header = () => {
       isBadge: false,
     },
   ]
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  useEffect(() => {
+    setAccessAuth(userLocalStorage);
+  }, [isLogin, userLocalStorage])
   const navigate = useNavigate();
 
   const { connectAsync } = useConnect();
@@ -48,13 +73,7 @@ const Header = () => {
   const { isConnected } = useAccount();
   const { signMessageAsync } = useSignMessage();
 
-  // TODO: remove later
-  const handleAuthFake = () => {
-    setIsLogin(!isLogin)
-  }
-
   const onChangeTab = (tab) => {
-    console.log(tab)
     // eslint-disable-next-line default-case
     switch(tab.id) {
       case 1: {
@@ -88,7 +107,6 @@ const Header = () => {
       chain: chain.id,
       network: 'evm'
     };
-    console.log(userData)
     // making a post request to our 'request-message' endpoint
     const { data } = await axios.post(
       `${process.env.REACT_APP_SERVER_URL}/request-message`,
@@ -103,7 +121,7 @@ const Header = () => {
     // signing the received message via metamask
     const signature = await signMessageAsync({ message });
 
-    await axios.post(
+    const verifyResult = await axios.post(
       `${process.env.REACT_APP_SERVER_URL}/verify`,
       {
         message,
@@ -112,9 +130,42 @@ const Header = () => {
       { withCredentials: true } // set cookie from Express server
     );
 
-    // redirect to /user
-    navigate('/user');
+    if (!verifyResult) {
+      return;
+    }
+    axios(`${process.env.REACT_APP_SERVER_URL}/authenticate`, {
+      withCredentials: true,
+    })
+      .then(({ data }) => {
+        const { iat, ...authData } = data; // remove unimportant iat value
+         const {address, profileId, signature} = authData;
+        if (authData) {
+          setIsLogin(true);
+          localStorage.setItem('user-address', address);
+          localStorage.setItem('user-profileId', profileId);
+          localStorage.setItem('user-signature', signature);
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      });
   };
+
+  const signOut = async () => {
+    const result = await axios(`${process.env.REACT_APP_SERVER_URL}/logout`, {
+      withCredentials: true,
+    });
+
+    if (result.status !== 200) {
+      return;
+    }
+
+    setIsLogin(false);
+    localStorage.removeItem('user-signature');
+    localStorage.removeItem('user-address');
+    localStorage.removeItem('user-profileId');
+    handleClose();
+  }
   return (
     <div className="text-white flex bg-[#17171A] text-white h-20 gap-[100px] w-full p-[30px]">
       <div className="flex justify-center h-full max-w-screen-xl mx-auto px-4">
@@ -134,19 +185,79 @@ const Header = () => {
                     <input className="bg-transparent outline-none text-white w-70 ml-3" placeholder='Search' />
                 </div>
             </div>
-            <button
+            {
+              !accessAuth && (
+                <button
                 className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
                 onClick={() => handleAuth()}
-            >
-                login
-            </button>
-            {/* Change later */}
-            {
-              isLogin &&
-                <div className="relative w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-                  <svg className="absolute w-12 h-12 text-gray-400 -left-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"></path></svg>
-                </div>
+                >
+                  login
+                </button>
+              )
             }
+            {accessAuth && (
+              <>
+                <IconButton
+                  onClick={handleClick}
+                  size="small"
+                  sx={{ ml: 2 }}
+                  aria-controls={open ? 'account-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? 'true' : undefined}
+                >
+                  <Avatar alt="A" src={logoFake} />
+                </IconButton>
+                <Menu
+                  anchorEl={anchorEl}
+                  id="account-menu"
+                  open={open}
+                  onClose={handleClose}
+                  onClick={handleClose}
+                  PaperProps={{
+                    elevation: 0,
+                    sx: {
+                      overflow: 'visible',
+                      filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                      mt: 1.5,
+                      '& .MuiAvatar-root': {
+                        width: 32,
+                        height: 32,
+                        ml: -0.5,
+                        mr: 1,
+                      },
+                      '&:before': {
+                        content: '""',
+                        display: 'block',
+                        position: 'absolute',
+                        top: 0,
+                        right: 14,
+                        width: 10,
+                        height: 10,
+                        bgcolor: 'background.paper',
+                        transform: 'translateY(-50%) rotate(45deg)',
+                        zIndex: 0,
+                      },
+                    },
+                  }}
+                  transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                  anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                >
+                  <MenuItem onClick={handleClose}>
+                    <ListItemIcon>
+                      <Settings fontSize="small" />
+                    </ListItemIcon>
+                    Settings
+                  </MenuItem>
+                  <Divider />
+                  <MenuItem onClick={signOut}>
+                    <ListItemIcon>
+                      <Logout fontSize="small" />
+                    </ListItemIcon>
+                    Logout
+                  </MenuItem>
+                </Menu>
+              </>
+            )}
         </div>
       </div>
     </div>

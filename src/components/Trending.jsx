@@ -45,7 +45,7 @@ const Trending = () => {
         },
     ]
 
-    return <div className="text-white">
+    return <div className="text-white px-4">
         <div className={styles.trendingWrapper}>
             <div className="flex justify-between">
                 <h1 className={styles.h1}>List of products for today's auction</h1>

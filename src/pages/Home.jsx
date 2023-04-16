@@ -3,6 +3,7 @@ import Header from '../components/Header'
 import Trending from '../components/Trending'
 import CMCtable from '../components/cmc-table/CmcTable'
 
+
 const home = () => {
   return (
     <div className='min-h-screen'>
