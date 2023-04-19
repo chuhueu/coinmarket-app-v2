@@ -1,57 +1,97 @@
 import { useContext, useEffect, useState, useCallback } from 'react'
-import btc from '../../assets/btc.png'
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import { useNavigate } from 'react-router-dom';
 import { CoinMarketContext } from '../../context/context'
 import CMCtableHeader from './CmcTableHeader'
 import CMCtableRow from './CmcTableRow'
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import Snackbar from '@mui/material/Snackbar';
 
 const CMCtable = () => {
-  let { getTopTenCoins } = useContext(CoinMarketContext)
-  let [coinData, setCoinData] = useState(null)
-
+  const navigate = useNavigate();
+  let { getListProduct } = useContext(CoinMarketContext)
+  let [productData, setProductData] = useState([])
+  const [state, setState] = useState({
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+  });
+  const { vertical, horizontal, open } = state;
   useEffect(() => {
     setData()
   }, [])
 
   const setData = useCallback(async () => {
     try {
-      let apiResponse = await getTopTenCoins()
-      let filteredResponse = []
-
-      for (let i = 0; i < apiResponse.length; i++) {
-        const element = apiResponse[i]
-        if (element.cmc_rank <= 10) filteredResponse.push(element)
-      }
-
-      setCoinData(filteredResponse)
+      const products = await getListProduct()
+      setProductData(products)
     } catch (e) {
       console.log(e.message)
     }
-  }, [getTopTenCoins])
+  }, [getListProduct])
 
+  const handleClick = (newState, code) => () => {
+    const userLocalStorage =
+      localStorage.getItem('user-signature') ??
+      localStorage.getItem('user-address') ??
+      localStorage.getItem('user-profileId') ??
+      ''
+    if (!userLocalStorage) {
+      setState({ open: true, ...newState });
+      return; 
+    }
+    navigate(
+      `/product/info/${code}`,
+    )
+  };
+
+  const handleClose = () => {
+    setState({ ...state, open: false });
+  };
+ 
   return (
-    <div className='text-white font-bold'>
+    <div className='text-white font-bold mx-auto max-w-screen-2xl'>
+      <Stack direction="row" spacing={2} className='justify-end mb-2 pr-3' style={{marginTop: '-35px'}}>
+        <Button 
+          variant="outlined"
+          startIcon={<PictureAsPdfIcon />}
+          onClick={handleClick({
+            vertical: 'top',
+            horizontal: 'right',
+          })}
+        >
+          PDF
+        </Button>
+        <Button
+          variant="contained"
+          endIcon={<FileDownloadIcon />}
+          onClick={handleClick({
+            vertical: 'top',
+            horizontal: 'right',
+          })}
+        >
+          EXCEL
+        </Button>
+      </Stack>
       <div className='mx-auto max-w-screen-2xl'>
         <table className='w-full'>
           <CMCtableHeader />
 
-          {coinData && coinData ? (
-            coinData.map((coin, index) => {
+          {productData && productData.length ? (
+            productData.map((product, index) => {
               return (
                 <CMCtableRow
-                  key={index}
-                  starNum={coin.cmc_rank}
-                  coinName={coin.name}
-                  coinSymbol={coin.symbol}
-                  coinIcon={btc}
-                  showBuy={true}
-                  hRate={coin.quote.USD.percent_change_24h}
-                  dRate={coin.quote.USD.percent_change_7d}
-                  hRateIsIncrement={true}
-                  price={coin.quote.USD.price}
-                  marketCapValue={coin.quote.USD.market_cap}
-                  volumeCryptoValue={coin.quote.USD.volume_24h}
-                  volumeValue={coin.total_supply}
-                  circulatingSupply={coin.circulating_supply}
+                  index={index + 1}
+                  key={product._id}
+                  code={product._id}
+                  image={product.image}
+                  name={product.name}
+                  currentBid={product.estimatePrice}
+                  completedYear={product.completedYear}
+                  startedYear={product.startedYear}
+                  handleClick={handleClick}
                 />
               )
             })
@@ -60,6 +100,13 @@ const CMCtable = () => {
           )}
         </table>
       </div>
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal  }}
+        open={open}
+        onClose={handleClose}
+        message="You have to login"
+        key={vertical + horizontal}
+      />
     </div>
   )
 }

@@ -1,9 +1,18 @@
 import { createContext } from 'react'
+import axios from 'axios'
 
 export const CoinMarketContext = createContext()
 
 export const CoinMarketProvider = ({children}) => {
-    
+    const getListProduct = async () => {
+        const result = await axios.get(
+            `${process.env.REACT_APP_SERVER_URL}/api/product`,
+        );
+        if (result.status === 200) {
+            return result.data;
+        }
+    }
+
     const getTopTenCoins = async () => {
         try {
             let headers = new Headers();
@@ -29,7 +38,8 @@ export const CoinMarketProvider = ({children}) => {
     return (
         <CoinMarketContext.Provider
             value={{
-                getTopTenCoins
+                getTopTenCoins,
+                getListProduct
             }}
         >
             {children}

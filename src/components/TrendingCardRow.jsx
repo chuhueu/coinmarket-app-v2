@@ -19,7 +19,7 @@ const TrendingCardRow = ({ number, icon, name, symbol, isIncrement, rate }) => {
           <span className='text-gray-400'> {symbol}</span>
         </p>
       </div>
-      <Rate isIncrement={isIncrement} rate={rate} />
+      {/* <Rate isIncrement={isIncrement} rate={rate} /> */}
     </div>
   )
 }

@@ -11,10 +11,17 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
-import Settings from '@mui/icons-material/Settings';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import Logout from '@mui/icons-material/Logout';
+import Snackbar from '@mui/material/Snackbar';
 
 const Header = () => {
+  const [state, setState] = useState({
+    opened: false,
+    vertical: 'top',
+    horizontal: 'center',
+  });
+  const { vertical, horizontal, opened } = state;
   const userLocalStorage =
     localStorage.getItem('user-signature') ??
     localStorage.getItem('user-address') ??
@@ -62,6 +69,11 @@ const Header = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const showProfile = () => {
+    navigate('/user');
+    handleClose();
+  }
 
   useEffect(() => {
     setAccessAuth(userLocalStorage);
@@ -149,6 +161,8 @@ const Header = () => {
       .catch((err) => {
         console.log(err)
       });
+
+    setState({ open: true, vertical: 'top', horizontal: 'right' });
   };
 
   const signOut = async () => {
@@ -242,11 +256,11 @@ const Header = () => {
                   transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                   anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                 >
-                  <MenuItem onClick={handleClose}>
+                  <MenuItem onClick={showProfile}>
                     <ListItemIcon>
-                      <Settings fontSize="small" />
+                      <AccountCircleOutlinedIcon fontSize="small" />
                     </ListItemIcon>
-                    Settings
+                    Profile
                   </MenuItem>
                   <Divider />
                   <MenuItem onClick={signOut}>
@@ -260,6 +274,12 @@ const Header = () => {
             )}
         </div>
       </div>
+      <Snackbar
+        anchorOrigin={{ vertical, horizontal  }}
+        open={opened}
+        message="Successful login "
+        key={vertical + horizontal}
+      />
     </div>
   )
 }

@@ -24,24 +24,64 @@ const Trending = () => {
             symbol: "",
             name: "Mona Lisa",
             icon: monaLisa,
-            isIncrement: true,
-            rate: "2.34%"
+            // isIncrement: true,
+            // rate: "2.34%"
         },
         {
             number: 2,
             symbol: "",
             name: "The Last Supper (Bữa ăn tối cuối cùng)",
             icon: theLastDinner,
-            isIncrement: false,
-            rate: "9.32%"
+            // isIncrement: false,
+            // rate: "9.32%"
         },
         {
             number: 3,
             symbol: "",
             name: "The Starry Night (Đêm đầy sao)",
             icon: fullStars,
-            isIncrement: true,
-            rate: "2.34%"
+        },
+    ]
+
+    const biggestGainersData = [
+        {
+            number: 1,
+            symbol: "",
+            name: "The Scream (Tiếng Thét)",
+            icon: 'https://www.kiettacnghethuat.com/wp-content/uploads/The-Scream.jpg',
+        },
+        {
+            number: 2,
+            symbol: "",
+            name: "Self-portrait (Bức chân dung tự họa)",
+            icon: 'https://i2.ex-cdn.com/homeaz.vn/files/content/2020/07/09/chan-dung-tu-hoa-van-gogh-homeazvn8-1119.jpg',
+        },
+        {
+            number: 3,
+            symbol: "",
+            name: "Guernica",
+            icon: 'https://www.kiettacnghethuat.com/wp-content/uploads/Guernica.jpg',
+        },
+    ]
+
+    const recentlyAddedData = [
+        {
+            number: 1,
+            symbol: "",
+            name: "The kiss (Nụ hôn)",
+            icon: 'https://www.kiettacnghethuat.com/wp-content/uploads/The-Kiss.jpg',
+        },
+        {
+            number: 2,
+            symbol: "",
+            name: "Girl With a Pearl Earring (Cô Gái Đeo Bông Tai)",
+            icon: 'https://www.kiettacnghethuat.com/wp-content/uploads/Girl-With-a-Pearl-Earring.jpg',
+        },
+        {
+            number: 3,
+            symbol: "",
+            name: "Creation of Adam (Tạo Ra Adam)",
+            icon: 'https://www.kiettacnghethuat.com/wp-content/uploads/Creation-of-Adam.jpg',
         },
     ]
 
@@ -52,8 +92,8 @@ const Trending = () => {
             </div>
             <div className={styles.flexCenter}>
                 <TrendingCard title='Trending' icon={fire} trendingData={trendingData} />
-                <TrendingCard title='Biggest Gainers' icon={gainers} trendingData={trendingData} />
-                <TrendingCard title='Recently Added' icon={recent} trendingData={trendingData} />
+                <TrendingCard title='Biggest Gainers' icon={gainers} trendingData={biggestGainersData} />
+                <TrendingCard title='Recently Added' icon={recent} trendingData={recentlyAddedData} />
             </div>
         </div>
     </div>

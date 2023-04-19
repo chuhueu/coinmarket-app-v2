@@ -41,7 +41,7 @@ const router = createBrowserRouter([
     element: <User />,
   },
   {
-    path: '/currencies/info',
+    path: '/product/info/:id',
     element: <Info />,
   },
 ]);

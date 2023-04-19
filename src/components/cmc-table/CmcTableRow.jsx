@@ -1,123 +1,41 @@
-import More from '../../assets/svg/more'
-import Star from '../../assets/svg/star'
-import CoinNameRow from './CoinNameRow'
-import Rate from './Rate'
+import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
+import EditIcon from '@mui/icons-material/Edit';
+import IconButton from '@mui/material/IconButton';
 
 const styles = {
   tableRow: `text-white border-b border-gray-800 text-[0.93rem]`,
 }
 
 const CMCtableRow = ({
-  starNum,
-  coinName,
-  coinIcon,
-  coinSymbol = '---',
-  price = '----',
-  hRate = '---',
-  dRate = '---',
-  hRateIsIncrement,
-  dRateIsIncrement,
-  marketCapValue = '---',
-  volumeValue = '---',
-  volumeCryptoValue = '---',
-  circulatingSupply = '---',
+  index,
+  code,
+  image,
+  name,
+  currentBid,
+  completedYear,
+  startedYear,
+  handleClick
 }) => {
-  const graphImages = [
-    'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/52.svg',
-    'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/1.svg',
-    'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/825.svg',
-    'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/3408.svg',
-    'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/5426.svg',
-    'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/7129.svg',
-    'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/3957.svg',
-    'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/328.svg',
-    'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/2416.svg',
-    'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/1765.svg',
-    'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/2099.svg',
-    'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/7653.svg',
-  ]
-
-  const getRandomGraph = () => {
-    const rndInt = Math.floor(Math.random() * 10) + 1
-    return graphImages[rndInt]
-  }
-
-  const navigate = useNavigate();
-
-  const viewCoinDetails = () => {
-    navigate(
-      `/currencies/info?symbol=${coinSymbol}&coin=${coinName}&price=${price}`,
-    )
-  }
-
-  const viewPrice = () => {
-    navigate(
-      `/currencies/price?symbol=${coinSymbol}&coin=${coinName}&price=${price}`,
-    )
-  }
-
-  const formatNum = num => {
-    return Number(num.toFixed(2)).toLocaleString()
-  }
-
   return (
     <tbody className={styles.tableRow}>
       <tr>
-        <td>
-          <Star />
+        <td className='text-center mb-2'>{index}</td>
+        <td className='text-center mb-2'>{code.slice(0,5)}</td>
+        <td className='flex justify-center mb-2'>
+          <img src={image} width={27} height={27} alt='' style={{height: '30px'}} />
         </td>
-        <td>{starNum}</td>
-
-        {coinIcon && coinIcon ? (
-          <td className='cursor-pointer'>
-            <CoinNameRow
-              name={coinName}
-              icon={coinIcon}
-              clicked={viewCoinDetails}
-            />
-          </td>
-        ) : (
-          <></>
-        )}
-
-        <td className='cursor-pointer' onClick={viewPrice}>
-          <p>${formatNum(price)}</p>
-        </td>
-        <td>
-          <Rate isIncrement={hRateIsIncrement} rate={`${formatNum(hRate)}%`} />
-        </td>
-        <td>
-          <Rate isIncrement={dRateIsIncrement} rate={`${formatNum(dRate)}%`} />
-        </td>
-
-        <td>
-          <div>
-            <p>${formatNum(marketCapValue)}</p>
-          </div>
-        </td>
-
-        <td>
-          <div>
-            <p>{formatNum(volumeValue)}</p>
-            <p className='text-gray-400'>
-              {formatNum(volumeCryptoValue)} {coinSymbol}
-            </p>
-          </div>
-        </td>
-
-        <td>
-          <div>
-            <p>{formatNum(circulatingSupply)}</p>
-          </div>
-        </td>
-
-        <td>
-          <img src={getRandomGraph()} width={150} height={60} alt='' />
-        </td>
-
-        <td>
-          <More />
+        <td className='text-left mb-2'>{name}</td>
+        <td className='text-left mb-2'>{currentBid}</td>
+        <td className='text-center mb-2'>{completedYear}</td>
+        <td className='text-center mb-2'>{startedYear}</td>
+        <td className='text-center mb-2'>
+          <IconButton onClick={handleClick({
+            vertical: 'top',
+            horizontal: 'right',
+          }, code)}>
+            <EditIcon />
+          </IconButton>
         </td>
       </tr>
     </tbody>
