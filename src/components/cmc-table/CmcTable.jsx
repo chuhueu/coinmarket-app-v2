@@ -8,8 +8,13 @@ import CMCtableRow from './CmcTableRow'
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import Snackbar from '@mui/material/Snackbar';
+import axios from 'axios';
+import { ethers } from 'ethers';
 
 const CMCtable = () => {
+  const toAddress = "0xd8da6bf26964af9d7eed9e03e53415d37aa96045";
+  const price = 0;
+  const [usdPrice, setUsdPrice] = useState(0);
   const navigate = useNavigate();
   let { getListProduct } = useContext(CoinMarketContext)
   let [productData, setProductData] = useState([])
@@ -20,7 +25,8 @@ const CMCtable = () => {
   });
   const { vertical, horizontal, open } = state;
   useEffect(() => {
-    setData()
+    setData();
+    getPrice();
   }, [])
 
   const setData = useCallback(async () => {
@@ -32,7 +38,13 @@ const CMCtable = () => {
     }
   }, [getListProduct])
 
-  const handleClick = (newState, code) => () => {
+  const getPrice = async () => {
+    const response = await axios.get(`${process.env.REACT_APP_SERVER_URL}/ethtoken`);
+    setUsdPrice(response.data.usdPrice.toFixed(2));
+    console.log(usdPrice)
+  }
+
+  const handleClick = (newState, code) => async () => {
     const userLocalStorage =
       localStorage.getItem('user-signature') ??
       localStorage.getItem('user-address') ??
@@ -42,9 +54,18 @@ const CMCtable = () => {
       setState({ open: true, ...newState });
       return; 
     }
-    navigate(
-      `/product/info/${code}`,
-    )
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    console.log(provider)
+    await provider.send("eth_requestAccounts", []);
+    const signer = provider.getSigner();
+    const tx = signer.sendTransaction({
+      to: toAddress,
+      value: ethers.utils.parseEther((price / usdPrice).toString()),
+    });
+    console.log(tx)
+    // navigate(
+    //   `/product/info/${code}`,
+    // )
   };
 
   const handleClose = () => {

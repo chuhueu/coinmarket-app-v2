@@ -14,6 +14,7 @@ import Divider from '@mui/material/Divider';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import Logout from '@mui/icons-material/Logout';
 import Snackbar from '@mui/material/Snackbar';
+import shiba from '../assets/shiba.png'
 
 const Header = () => {
   const [state, setState] = useState({
@@ -219,7 +220,7 @@ const Header = () => {
                   aria-haspopup="true"
                   aria-expanded={open ? 'true' : undefined}
                 >
-                  <Avatar alt="A" src={logoFake} />
+                  <img alt='' src={shiba} width={70} height={70} />
                 </IconButton>
                 <Menu
                   anchorEl={anchorEl}
